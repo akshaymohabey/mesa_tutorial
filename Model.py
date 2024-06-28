@@ -1,5 +1,7 @@
 # Import Dependencies
 import mesa
+import numpy as np
+import matplotlib.pyplot as plt
 
 # Resource Classes
 
@@ -43,10 +45,32 @@ class SugarscapeG1mt(mesa.Model):
     from Growing Artificial Societies
     '''
 
-    def __init__(self):
-        self.sugar = Sugar()
-        self.spice = Spice()
-        self.trader = Trader()
+    def __init__(self,width=50,height=50):
+        
+        # Initiate width and height of Sugarscape
+        self.width = width
+        self.height = height
+
+        # Initite Mesa Grid Class
+        self.grid = mesa.space.MultiGrid(self.width,self.height,torus=False)
+
+        # Read in landscape file from supplementary material
+        sugar_distribution = np.genfromtxt("sugar-map.txt")
+        spice_distribution = np.flip(sugar_distribution)
+
+        plt.imshow(sugar_distribution,origin='lower')
+        plt.show()
+
+        # plt.imshow(spice_distribution,origin='lower')
+        # plt.show()
+
+        # print(sugar_distribution.shape)
+        # print(sugar_distribution[30][15])
+
+
+        # self.sugar = Sugar()
+        # self.spice = Spice()
+        # self.trader = Trader()
 
 
 model = SugarscapeG1mt()
