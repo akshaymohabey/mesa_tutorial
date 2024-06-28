@@ -1,19 +1,18 @@
 # Import Dependencies
 import mesa
 import numpy as np
+import math
 import matplotlib.pyplot as plt
 
 # Resource Classes
 
 class Sugar(mesa.Agent):
-    '''
-    Sugar:
-    - Contains an amount of Sugar
-    - Grows one amount of Sugar at each turn
-    '''
-
-    def __init__(self):
-        print("I am Sugar")
+   
+    def __init__(self,unique_id,model,pos,max_sugar):
+        super().__init__(unique_id,model)
+        self.pos = pos
+        self.amount = max_sugar
+        self.max_sugar = max_sugar
 
 class Spice(mesa.Agent):
     '''
@@ -56,13 +55,17 @@ class SugarscapeG1mt(mesa.Model):
 
         # Read in landscape file from supplementary material
         sugar_distribution = np.genfromtxt("sugar-map.txt")
-        spice_distribution = np.flip(sugar_distribution)
+        spice_distribution = np.flip(sugar_distribution,1)
 
-        plt.imshow(sugar_distribution,origin='lower')
-        plt.show()
+        agent_id = 0
+        for _, (x,y) in self.grid.coord_iter():
+            max_sugar = int(sugar_distribution[x,y])
+            if max_sugar > 0:
+                sugar = Sugar(agent_id,self,(x,y),max_sugar)
+                self.grid.place_agent(sugar,(x,y))
+                agent_id += 1
+            print(_, (x,y))
 
-        # plt.imshow(spice_distribution,origin='lower')
-        # plt.show()
 
         # print(sugar_distribution.shape)
         # print(sugar_distribution[30][15])
@@ -71,6 +74,9 @@ class SugarscapeG1mt(mesa.Model):
         # self.sugar = Sugar()
         # self.spice = Spice()
         # self.trader = Trader()
+
+        # for _, (x,y) in self.grid.coord_iter():
+        #     print(int(sugar_distribution[x,y]))
 
 
 model = SugarscapeG1mt()
