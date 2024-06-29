@@ -8,20 +8,18 @@ import itertools
 # Resource Classes
 
 class Sugar(mesa.Agent):
-    def __init__(self,unique_id,model,pos,max_sugar):
-        super().__init__(unique_id,model)
+    def __init__(self,unique_id,model, pos, max_sugar):
+        super().__init__(unique_id, model)
         self.pos = pos
         self.amount = max_sugar
         self.max_sugar = max_sugar
 
 class Spice(mesa.Agent):
-    '''
-    Spice:
-    - Contains an amount of Spice
-    - Grows one amount of Spice at each turn    
-    '''
-    def __init__(self):
-        print("I am Spice")
+    def __init__(self, unique_id, model, pos, max_spice):
+        super().__init__(unique_id,model)
+        self.pos = pos
+        self.amount = max_spice
+        self.max_spice = max_spice
 
 # Trader Class
 
@@ -60,13 +58,21 @@ class SugarscapeG1mt(mesa.Model):
 
 
         agent_id = 0
-        for x,y in itertools.product(range(50),range(50)):
+        for _,(x,y) in self.grid.coord_iter():
             max_sugar = sugar_distribution[x,y]
             if max_sugar > 0:
                 sugar = Sugar(agent_id, self, (x,y), max_sugar)
                 self.grid.place_agent(sugar,(x,y))
+                self.schedule.add(sugar)
+                print(self.schedule.agents_by_type[Sugar][agent_id])
                 agent_id += 1
-                
+            max_spice = spice_distribution[x,y]
+            if max_spice > 0:
+                spice = Spice(agent_id,self, (x,y), max_spice)
+                self.grid.place_agent(spice, (x,y))
+                self.schedule.add(spice)
+                print(self.schedule.agents_by_type[Spice][agent_id])
+                agent_id += 1
 
 #Calling Model
 model = SugarscapeG1mt()
