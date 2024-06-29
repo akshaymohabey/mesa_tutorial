@@ -1,6 +1,7 @@
 # Import Dependencies
 import mesa
 import numpy as np
+import networkx as nx
 import math
 import matplotlib.pyplot as plt
 import itertools
