@@ -41,10 +41,18 @@ class SugarscapeG1mt(mesa.Model):
     from Growing Artificial Societies
     '''
 
-    def __init__(self,width=50,height=50):
+    def __init__(self,width=50,height=50, initial_population = 200,
+                 endowment_min = 25, endowment_max=50, metabolism_min=1,
+                 metabolism_max=5, vision_min=1, vision_max=5):
         # Initiate width and height of Sugarscape
         self.width = width
         self.height = height
+
+        # Inititate population attributes
+        self.initial_population = initial_population
+        self.endowment_min = endowment_min
+        self.endowment_max = endowment_max
+
 
         # Initite Mesa Grid Class
         self.grid = mesa.space.MultiGrid(self.width,self.height,torus=False)
@@ -66,6 +74,7 @@ class SugarscapeG1mt(mesa.Model):
                 self.schedule.add(sugar)
                 print(self.schedule.agents_by_type[Sugar][agent_id])
                 agent_id += 1
+            
             max_spice = spice_distribution[x,y]
             if max_spice > 0:
                 spice = Spice(agent_id,self, (x,y), max_spice)
