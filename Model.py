@@ -3,11 +3,11 @@ import mesa
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+import itertools
 
 # Resource Classes
 
 class Sugar(mesa.Agent):
-   
     def __init__(self,unique_id,model,pos,max_sugar):
         super().__init__(unique_id,model)
         self.pos = pos
@@ -44,7 +44,6 @@ class SugarscapeG1mt(mesa.Model):
     '''
 
     def __init__(self,width=50,height=50):
-        
         # Initiate width and height of Sugarscape
         self.width = width
         self.height = height
@@ -52,24 +51,22 @@ class SugarscapeG1mt(mesa.Model):
         # Initite Mesa Grid Class
         self.grid = mesa.space.MultiGrid(self.width,self.height,torus=False)
 
+        # Initiate scheduler
+        self.schedule = mesa.time.RandomActivationByType(self)
+
         # Read in landscape file from supplementary material
         sugar_distribution = np.genfromtxt("sugar-map.txt")
         spice_distribution = np.flip(sugar_distribution, 1)
 
+
         agent_id = 0
-        # for _, (x,y) in self.grid.coord_iter():
-        #     max_sugar = sugar_distribution[x,y]
-
-        #     if max_sugar > 0:
-        #         sugar = Sugar(agent_id, self, (x,y), max_sugar)
-        #         # self.grid.place_agent(sugar,(x,y))
-        #         agent_id += 1
-        #         print(agent_id, max_sugar, (x,y))
-
-            # print(_, (x,y))
-
-        # for _, (x,y) in self.grid.coord_iter():
-        #     print(int(sugar_distribution[x,y]),(x,y))
+        for x,y in itertools.product(range(50),range(50)):
+            max_sugar = sugar_distribution[x,y]
+            if max_sugar > 0:
+                sugar = Sugar(agent_id, self, (x,y), max_sugar)
+                self.grid.place_agent(sugar,(x,y))
+                agent_id += 1
+                
 
 #Calling Model
 model = SugarscapeG1mt()
